@@ -1,0 +1,138 @@
+
+
+## Changes in per capita incomes
+
+## Defining variables
+#1. Income
+eu_income = read.csv2("pcd.csv", header = TRUE, sep = ",")
+eu_income$gdp = as.numeric(as.character(eu_income$gdp))
+summary(eu_income)
+eu_income$time = ifelse(eu_income$year >=2004,1,0)
+eu_income$treated= ifelse(eu_income$country == "Czechia"|
+                            eu_income$country == "Estonia"|
+                            eu_income$country == "Latvia"|
+                            eu_income$country =="Hungary"|
+                            eu_income$country =="Lithuania"|
+                            eu_income$country == "Malta"|
+                            eu_income$country == "Poland"|
+                            eu_income$country == "Slovakia"|
+                            eu_income$country == "Cyprus"|
+                            eu_income$country == "Slovenia", 1, 0)
+did_eu = lm(gdp~time+treated+time*treated, data=eu_income)
+did_eu_panel = plm(gdp~time+treated+time*treated, data=eu_income)
+stargazer(did_eu, did_eu_panel, type = "text")
+
+# Changes in Trade (net of Balance of Payments)
+#2. Net Trade Balance
+eu_trd = read.csv2("trade.csv", header=TRUE, sep = ",")
+eu_trd$trade = as.numeric(as.character(eu_trd$trade))
+summary(eu_trd)
+eu_trd$time = ifelse(eu_trd$year >=2004,1,0)
+eu_trd$treated = ifelse(eu_trd$country == "Czechia"|
+                          eu_trd$country == "Estonia"|
+                          eu_trd$country == "Latvia"|
+                          eu_trd$country =="Hungary"|
+                          eu_trd$country =="Lithuania"|
+                          eu_trd$country == "Malta"|
+                          eu_trd$country == "Poland"|
+                          eu_trd$country == "Slovakia"|
+                          eu_trd$country == "Cyprus"|
+                          eu_trd$country == "Slovenia", 1, 0)
+did_eu_trd = lm(trade~time+treated+time*treated, data=eu_trd)
+did_eu_trd_p = plm(trade~time+treated+time*treated,model="within", data=eu_trd)
+stargazer(did_eu_trd,did_eu_trd_p, type = "text")
+summary(did_eu_trd_p)
+
+## Changes in the labour force participation rates 
+## 3. Changes in Labour Force Participation Rate
+
+eu_labour = read.csv2("lfr.csv", header = TRUE, sep =",")
+eu_labour$lfpr = as.numeric(as.character(eu_labour$lfpr))
+summary(eu_labour)
+eu_labour$time = ifelse(eu_labour$year >=2004,1,0)
+eu_labour$treated = ifelse(eu_pci$country == "Czechia"|
+                             eu_labour$country == "Estonia"|
+                             eu_labour$country == "Latvia"|
+                             eu_labour$country =="Hungary"|
+                             eu_labour$country =="Lithuania"|
+                             eu_labour$country == "Malta"|
+                             eu_labour$country == "Poland"|
+                             eu_labour$country == "Slovakia"|
+                             eu_labour$country == "Cyprus"|
+                             eu_labour$country == "Slovenia", 1, 0)
+did_eu_lab = lm(lfpr~time+treated+time*treated, data = eu_labour)
+did_eu_labp = plm(lfpr~time+treated+time*treated, model="within", data = eu_labour)
+summary(did_eu_lab)
+summary(did_eu_labp)
+stargazer(did_eu_lab,did_eu_labp, type = "text")
+
+#Changes in fiscal policy
+#4. Amount of indebtedness / Public debt
+
+eu_fiscal = read.csv2("fiscal.csv", header = TRUE, sep =",")
+summary(eu_fiscal)
+eu_fiscal$fiscal = as.numeric(as.character(eu_fiscal$fiscal))
+eu_fiscal$time = ifelse(eu_fiscal$year>=2004,1,0)
+eu_fiscal$treated = ifelse(eu_fiscal$country == "Czechia"|
+                             eu_fiscal$country == "Estonia"|
+                             eu_fiscal$country == "Latvia"|
+                             eu_fiscal$country =="Hungary"|
+                             eu_fiscal$country =="Lithuania"|
+                             eu_fiscal$country == "Malta"|
+                             eu_fiscal$country == "Poland"|
+                             eu_fiscal$country == "Slovakia"|
+                             eu_fiscal$country == "Cyprus"|
+                             eu_fiscal$country == "Slovenia", 1, 0)
+did_eu_fiscal = lm(fiscal~time+treated+time*treated, data=eu_fiscal)
+did_eu_fiscalp = plm(fiscal~time+treated+time*treated, model="within", data=eu_fiscal)
+summary(did_eu_fiscal)
+summary(did_eu_fiscalp)
+stargazer(did_eu_fiscal,did_eu_fiscalp, type ="text")
+
+#Change in Gross fixed capital formation
+#5. Changes in Investments
+eu_cap = read.csv2("cap.csv", header = TRUE, sep = ",")
+eu_cap$gfce = as.numeric(as.character(eu_cap$gfce))
+summary(eu_cap)
+eu_cap$time = ifelse(eu_cap$year>=2004,1,0)
+eu_cap$treated = ifelse(eu_pci$country == "Czechia"|
+                          eu_cap$country == "Estonia"|
+                          eu_cap$country == "Latvia"|
+                          eu_cap$country =="Hungary"|
+                          eu_cap$country =="Lithuania"|
+                          eu_cap$country == "Malta"|
+                          eu_cap$country == "Poland"|
+                          eu_cap$country == "Slovakia"|
+                          eu_cap$country == "Cyprus"|
+                          eu_cap$country == "Slovenia", 1, 0)
+did_eu_cap = lm(gfce~time+treated+time*treated, data = eu_cap)
+did_eu_cap_p = plm(gfce~time+treated+time*treated, model="within", data = eu_cap)
+summary(did_eu_cap)
+stargazer(did_eu_cap,did_eu_cap_p, type = "text")
+
+##6. Changes in population
+
+eu_pop = read.csv2("epop.csv", header = TRUE, sep = ",")
+eu_pop$population = as.numeric(as.character(eu_pop$population))
+summary(eu_pop)
+eu_pop$time = ifelse(eu_pop$year>=2004,1,0)
+eu_pop$treated = ifelse(eu_pci$country == "Czechia"|
+                          eu_pop$country == "Estonia"|
+                          eu_pop$country == "Latvia"|
+                          eu_pop$country =="Hungary"|
+                          eu_pop$country =="Lithuania"|
+                          eu_pop$country == "Malta"|
+                          eu_pop$country == "Poland"|
+                          eu_pop$country == "Slovakia"|
+                          eu_pop$country == "Cyprus"|
+                          eu_pop$country == "Slovenia", 1, 0)
+
+##Regression equations
+did_eu_pop = lm(population~time+treated+time*treated, data = eu_pop)
+did_eu_pop_p = plm(population~time+treated+time*treated,model="within", data = eu_pop)
+summary(did_eu_pop)
+summary(did_eu_pop_p)
+stargazer(did_eu_pop,did_eu_pop_p, type = "text")
+stargazer(did_eu,did_eu_pop,did_eu_cap, type = "html")
+stargazer(did_eu_fiscal,did_eu_lab,did_eu_trd, type = "html" )
+
